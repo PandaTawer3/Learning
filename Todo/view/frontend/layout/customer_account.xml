@@ -11,5 +11,11 @@
                 </arguments>
             </block>
         </referenceBlock>
+        <referenceContainer name="content">
+            <block class="Magento\Framework\View\Element\Template"
+                   name="magemastery.todo.block.list"
+                   template="MageMastery_Todo::todo.phtml"
+           />
+        </referenceContainer>
     </body>
 </page>
