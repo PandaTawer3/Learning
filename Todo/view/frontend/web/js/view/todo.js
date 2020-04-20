@@ -1,19 +1,16 @@
 define(
     [
         'uiComponent',
-        'jquery',
-        'Magento_Ui/js/modal/confirm'
+        'jquery'
     ],
     function (
         Component,
-        $,
-        modal
+        $
     ) {
         'use strict';
 
         return Component.extend({
             defaults: {
-                newTaskLabel: '',
                 tasks: [
                     {
                         id: 1,
@@ -39,7 +36,7 @@ define(
             },
 
             initObservable: function () {
-                this._super().observe(['tasks', 'newTaskLabel']);
+                this._super().observe(['tasks']);
 
                 return this;
             },
@@ -59,38 +56,20 @@ define(
             },
             
             deleteTask: function (taskId) {
-                let self = this;
-                
-                modal({
-                   content: 'Are you sure you want to delete the task?',
-                   actions: {
-                       confirm: function () {
-                           let tasks = [];
+                let tasks = [];
 
-                           if (self.tasks().length === 1) {
-                               self.tasks(tasks);
-                               return;
-                           }
+                if (this.tasks().length === 1) {
+                    this.tasks(tasks);
+                    reutrn;
+                }
 
-                           self.tasks().forEach(function (task) {
-                               if (task.id !== taskId) {
-                                   tasks.push(task);
-                               }
-                           })
+                this.tasks().forEach(function (task) {
+                    if (task.id !== taskId) {
+                        tasks.push(task);
+                    }
+                })
 
-                           self.tasks(tasks);
-                       }
-                   }
-                });
-            },
-
-            addTask: function () {
-                this.tasks.push({
-                   id: Math.floor(Math.random() * 100),
-                   label: this.newTaskLabel(),
-                   status: false
-                });
-                this.newTaskLabel('');
+                this.tasks(tasks);
             }
         });
     }
