@@ -1,10 +1,11 @@
-<form class="form-container">
+<div class="form-container">
     <input
         type="text"
         class="task-input-field"
         id="todo-task-input"
         name="task"
         ko-value="newTaskLabel"
+        data-bind="event: { 'keyup': checkKey }"
         placeholder="Add a new task..."
     >
     <div class="actions-toolbar">
@@ -20,7 +21,7 @@
             </button>
         </div>
     </div>
-</form>
+</div>
 
 <!-- ko if: ($data.tasks) -->
 <ul class="tasks">
