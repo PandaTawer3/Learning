@@ -11,5 +11,5 @@ use Magento\Framework\Api\SearchResultsInterface;
 interface TaskRepositoryInterface
 {
     public function get(int $taskId);
-    public function getList(SearchResultsInterface $searchResults): TaskSearchResultInterface;
+    public function getList(SearchResultsInterface $searchCriteria): TaskSearchResultInterface;
 }
