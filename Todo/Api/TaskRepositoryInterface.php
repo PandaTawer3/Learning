@@ -3,7 +3,7 @@
 namespace MageMastery\Todo\Api;
 
 use MageMastery\Todo\Api\Data\TaskSearchResultInterface;
-use Magento\Framework\Api\SearchResultsInterface;
+use Magento\Framework\Api\SearchCriteriaInterface;
 
 /**
  * @api
@@ -11,5 +11,5 @@ use Magento\Framework\Api\SearchResultsInterface;
 interface TaskRepositoryInterface
 {
     public function get(int $taskId);
-    public function getList(SearchResultsInterface $searchCriteria): TaskSearchResultInterface;
+    public function getList(SearchCriteriaInterface $searchCriteria): TaskSearchResultInterface;
 }

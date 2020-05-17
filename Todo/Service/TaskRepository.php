@@ -8,7 +8,7 @@ use MageMastery\Todo\Api\TaskRepositoryInterface;
 use MageMastery\Todo\Model\ResourceModel\Task;
 use MageMastery\Todo\Model\TaskFactory;
 use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
-use Magento\Framework\Api\SearchResultsInterface;
+use Magento\Framework\Api\SearchCriteriaInterface;
 
 class TaskRepository implements TaskRepositoryInterface
 {
@@ -58,7 +58,7 @@ class TaskRepository implements TaskRepositoryInterface
         return $object;
     }
 
-    public function getList(SearchResultsInterface $searchCriteria): TaskSearchResultInterface
+    public function getList(SearchCriteriaInterface $searchCriteria): TaskSearchResultInterface
     {
         $searchResult = $this->searchResultInterfaceFactory->create();
         $searchResult->setSearchCriteria($searchCriteria);
