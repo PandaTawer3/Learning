@@ -2,12 +2,14 @@ define(
     [
         'uiComponent',
         'jquery',
-        'Magento_Ui/js/modal/confirm'
+        'Magento_Ui/js/modal/confirm',
+        'MageMastery_Todo/js/service/task'
     ],
     function (
         Component,
         $,
-        modal
+        modal,
+        taskService
     ) {
         'use strict';
 
@@ -15,32 +17,16 @@ define(
             defaults: {
                 newTaskLabel: '',
                 buttonSelector: '#add-new-task-button',
-                tasks: [
-                    {
-                        id: 1,
-                        label: "Task 1",
-                        status: false
-                    },
-                    {
-                        id: 2,
-                        label: "Task 2",
-                        status: false
-                    },
-                    {
-                        id: 3,
-                        label: "Task 3",
-                        status: false
-                    },
-                    {
-                        id: 4,
-                        label: "Task 4",
-                        status: true
-                    }
-                ]
+                tasks: []
             },
 
             initObservable: function () {
                 this._super().observe(['tasks', 'newTaskLabel']);
+
+                taskService.getList().then((tasks) => {
+                    this.tasks(tasks);
+                    return tasks;
+                });
 
                 return this;
             },
@@ -49,8 +35,8 @@ define(
                 const taskId = $(event.target).data('id');
 
                 let items = this.tasks().map(function (task) {
-                    if (task.id === taskId) {
-                        task.status = !task.status;
+                    if (task.task_id === taskId) {
+                        task.status = task.status === 'open' ? 'complete' : 'open';
                     }
 
                     return task;
@@ -74,7 +60,7 @@ define(
                            }
 
                            self.tasks().forEach(function (task) {
-                               if (task.id !== taskId) {
+                               if (task.task_id !== taskId) {
                                    tasks.push(task);
                                }
                            })
