@@ -34,9 +34,10 @@ define(
             switchStatus: function (data, event) {
                 const taskId = $(event.target).data('id');
 
-                let items = this.tasks().map(function (task) {
+                let items = this.tasks().map((task) => {
                     if (task.task_id === taskId) {
                         task.status = task.status === 'open' ? 'complete' : 'open';
+                        taskService.changeStatus(taskId, task.status);
                     }
 
                     return task;
