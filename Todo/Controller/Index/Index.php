@@ -66,16 +66,6 @@ class Index extends Action
 
     public function execute()
     {
-        $tasks = $this->taskRepository->getList($this->searchCriteriaBuilder->create())->getItems();
-
-        $task = $this->taskRepository->get(1);
-        $task->setData('status', 'complete');
-
-        $this->taskManagement->save($task);
-
-        var_dump($tasks);
-        return;
-
         return $this->resultFactory->create(ResultFactory::TYPE_PAGE);
     }
 }
