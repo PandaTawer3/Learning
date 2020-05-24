@@ -2,13 +2,14 @@
 
 namespace MageMastery\Todo\Service;
 
+use MageMastery\Todo\Api\Data\TaskInterface;
 use MageMastery\Todo\Api\Data\TaskSearchResultInterface;
 use MageMastery\Todo\Api\Data\TaskSearchResultInterfaceFactory;
 use MageMastery\Todo\Api\TaskRepositoryInterface;
 use MageMastery\Todo\Model\ResourceModel\Task;
 use MageMastery\Todo\Model\TaskFactory;
 use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
-use Magento\Framework\Api\SearchResultsInterface;
+use Magento\Framework\Api\SearchCriteriaInterface;
 
 class TaskRepository implements TaskRepositoryInterface
 {
@@ -51,14 +52,14 @@ class TaskRepository implements TaskRepositoryInterface
         $this->searchResultInterfaceFactory = $searchResultInterfaceFactory;
     }
 
-    public function get(int $taskId)
+    public function get(int $taskId): TaskInterface
     {
         $object = $this->taskFactory->create();
         $this->resource->load($object, $taskId);
         return $object;
     }
 
-    public function getList(SearchResultsInterface $searchCriteria): TaskSearchResultInterface
+    public function getList(SearchCriteriaInterface $searchCriteria): TaskSearchResultInterface
     {
         $searchResult = $this->searchResultInterfaceFactory->create();
         $searchResult->setSearchCriteria($searchCriteria);

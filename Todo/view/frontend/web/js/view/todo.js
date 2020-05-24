@@ -2,12 +2,16 @@ define(
     [
         'uiComponent',
         'jquery',
-        'Magento_Ui/js/modal/confirm'
+        'Magento_Ui/js/modal/confirm',
+        'MageMastery_Todo/js/service/task',
+        'MageMastery_Todo/js/model/loader'
     ],
     function (
         Component,
         $,
-        modal
+        modal,
+        taskService,
+        loader
     ) {
         'use strict';
 
@@ -15,32 +19,16 @@ define(
             defaults: {
                 newTaskLabel: '',
                 buttonSelector: '#add-new-task-button',
-                tasks: [
-                    {
-                        id: 1,
-                        label: "Task 1",
-                        status: false
-                    },
-                    {
-                        id: 2,
-                        label: "Task 2",
-                        status: false
-                    },
-                    {
-                        id: 3,
-                        label: "Task 3",
-                        status: false
-                    },
-                    {
-                        id: 4,
-                        label: "Task 4",
-                        status: true
-                    }
-                ]
+                tasks: []
             },
 
             initObservable: function () {
                 this._super().observe(['tasks', 'newTaskLabel']);
+
+                taskService.getList().then((tasks) => {
+                    this.tasks(tasks);
+                    return tasks;
+                });
 
                 return this;
             },
@@ -48,9 +36,10 @@ define(
             switchStatus: function (data, event) {
                 const taskId = $(event.target).data('id');
 
-                let items = this.tasks().map(function (task) {
-                    if (task.id === taskId) {
-                        task.status = !task.status;
+                let items = this.tasks().map((task) => {
+                    if (task.task_id === taskId) {
+                        task.status = task.status === 'open' ? 'complete' : 'open';
+                        taskService.changeStatus(taskId, task.status);
                     }
 
                     return task;
@@ -60,38 +49,49 @@ define(
             },
             
             deleteTask: function (taskId) {
-                let self = this;
-                
                 modal({
                    content: 'Are you sure you want to delete the task?',
                    actions: {
-                       confirm: function () {
+                       confirm: () => {
                            let tasks = [];
 
-                           if (self.tasks().length === 1) {
-                               self.tasks(tasks);
-                               return;
-                           }
-
-                           self.tasks().forEach(function (task) {
-                               if (task.id !== taskId) {
-                                   tasks.push(task);
+                           taskService.delete(this.tasks().find(task => {
+                               if (task.task_id === taskId) {
+                                   return task;
                                }
-                           })
+                           })).then(() => {
+                               if (this.tasks().length === 1) {
+                                   this.tasks(tasks);
+                                   return;
+                               }
 
-                           self.tasks(tasks);
+                               this.tasks().forEach(function (task) {
+                                   if (task.task_id !== taskId) {
+                                       tasks.push(task);
+                                   }
+                               })
+
+                               this.tasks(tasks);
+                           })
                        }
                    }
                 });
             },
 
             addTask: function () {
-                this.tasks.push({
-                   id: Math.floor(Math.random() * 100),
-                   label: this.newTaskLabel(),
-                   status: false
-                });
-                this.newTaskLabel('');
+                let task = {
+                    label: this.newTaskLabel(),
+                    status: 'open'
+                };
+
+                loader.startLoader();
+                taskService.create(task).then(taskId => {
+                    task.task_id = taskId;
+                    this.tasks.push(task);
+                    this.newTaskLabel('');
+                }).finally(() => {
+                    loader.stopLoader();
+                })
             },
 
             checkKey: function (data, event) {
