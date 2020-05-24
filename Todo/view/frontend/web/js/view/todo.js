@@ -77,12 +77,16 @@ define(
             },
 
             addTask: function () {
-                this.tasks.push({
-                   id: Math.floor(Math.random() * 100),
-                   label: this.newTaskLabel(),
-                   status: false
-                });
-                this.newTaskLabel('');
+                let task = {
+                    label: this.newTaskLabel(),
+                    status: 'open'
+                };
+
+                taskService.create(task).then(taskId => {
+                    task.task_id = taskId;
+                    this.tasks.push(task);
+                    this.newTaskLabel('');
+                })
             },
 
             checkKey: function (data, event) {
