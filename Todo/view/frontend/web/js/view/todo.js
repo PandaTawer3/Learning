@@ -3,13 +3,15 @@ define(
         'uiComponent',
         'jquery',
         'Magento_Ui/js/modal/confirm',
-        'MageMastery_Todo/js/service/task'
+        'MageMastery_Todo/js/service/task',
+        'MageMastery_Todo/js/model/loader'
     ],
     function (
         Component,
         $,
         modal,
-        taskService
+        taskService,
+        loader
     ) {
         'use strict';
 
@@ -82,10 +84,13 @@ define(
                     status: 'open'
                 };
 
+                loader.startLoader();
                 taskService.create(task).then(taskId => {
                     task.task_id = taskId;
                     this.tasks.push(task);
                     this.newTaskLabel('');
+                }).finally(() => {
+                    loader.stopLoader();
                 })
             },
 
