@@ -23,10 +23,10 @@ class TaskManagement implements TaskManagementInterface
      * @return bool
      * @throws AlreadyExistsException
      */
-    public function save(TaskInterface $task): bool
+    public function save(TaskInterface $task): int
     {
         $this->resource->save($task);
-        return true;
+        return $task->getTaskId();
     }
 
     /**
