@@ -47,26 +47,30 @@ define(
             },
             
             deleteTask: function (taskId) {
-                let self = this;
-                
                 modal({
                    content: 'Are you sure you want to delete the task?',
                    actions: {
-                       confirm: function () {
+                       confirm: () => {
                            let tasks = [];
 
-                           if (self.tasks().length === 1) {
-                               self.tasks(tasks);
-                               return;
-                           }
-
-                           self.tasks().forEach(function (task) {
-                               if (task.task_id !== taskId) {
-                                   tasks.push(task);
+                           taskService.delete(this.tasks().find(task => {
+                               if (task.task_id === taskId) {
+                                   return task;
                                }
-                           })
+                           })).then(() => {
+                               if (this.tasks().length === 1) {
+                                   this.tasks(tasks);
+                                   return;
+                               }
 
-                           self.tasks(tasks);
+                               this.tasks().forEach(function (task) {
+                                   if (task.task_id !== taskId) {
+                                       tasks.push(task);
+                                   }
+                               })
+
+                               this.tasks(tasks);
+                           })
                        }
                    }
                 });
